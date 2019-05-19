@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/verdaccio-groupnames.svg)](https://badge.fury.io/js/verdaccio-groupnames)
+
 # verdaccio-groupnames
 
 Verdaccio Plugin to handle $group in package access specifications
