@@ -1,0 +1,11 @@
+{
+  "name": "verdaccio-groupnames",
+  "version": "1.0.0",
+  "description": "Verdaccio Plugins to grant access to group names based on the groups calculated in the authentication",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Koppehel",
+  "license": "MIT"
+}
