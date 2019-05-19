@@ -1,3 +1,5 @@
+const { createError } = require('http-errors');
+
 class DynamicGroupPlugin {
   constructor(config, stuff) {
     this.logger = stuff.logger;
@@ -28,9 +30,9 @@ class DynamicGroupPlugin {
       }
 
       if (name) {
-        callback(_utils.ErrorCode.getForbidden(`user ${name} is not allowed to ${action} package ${pkg.name}`));
+        callback(createError(403, `user ${name} is not allowed to ${action} package ${pkg.name}`));
       } else {
-        callback(_utils.ErrorCode.getUnauthorized(`authorization required to ${action} package ${pkg.name}`));
+        callback(createError(401, `authorization required to ${action} package ${pkg.name}`));
       }
     };
   }
