@@ -45,7 +45,9 @@ class DynamicGroupPlugin {
   }
   allow_unpublish(user, pkg, callback) {
     const action = 'unpublish';
-    const hasSupport = pkg[action] == null ? false : pkg[action];
+    const isDefined = pkg[action] === null || pkg[action] === undefined;
+
+    const hasSupport = isDefined ? pkg[action] : false;
 
     if (hasSupport === false) {
       return callback(null, undefined);
