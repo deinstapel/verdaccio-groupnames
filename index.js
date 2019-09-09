@@ -45,7 +45,9 @@ class DynamicGroupPlugin {
   }
   allow_unpublish(user, pkg, callback) {
     const action = 'unpublish';
-    const hasSupport = _lodash.default.isNil(pkg[action]) === false ? pkg[action] : false;
+    const isDefined = pkg[action] === null || pkg[action] === undefined;
+
+    const hasSupport = isDefined ? pkg[action] : false;
 
     if (hasSupport === false) {
       return callback(null, undefined);
