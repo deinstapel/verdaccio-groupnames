@@ -1,36 +1,70 @@
 const createError = require('http-errors');
+const { Client } = require('ldapts');
 
 class DynamicGroupPlugin {
   constructor(config, stuff) {
     this.logger = stuff.logger;
+    this.config = config;
+
+    if (config.allowNonexistingLdapGroups) {
+      this.ldap = new Client({
+        url: config.ldapURL,
+      });
+      this.allGroups = [];
+      setInterval(() => {
+        this.ldap.bind(config.bindDN, config.bindPW).then(() => {
+          return this.ldap.search(config.groupDN, {
+            scope: 'one',
+          });
+        }).then(result => {
+            this.allGroups = result.searchEntries.map(j => j.cn);
+            this.logger.info(`Synced groupnames, got ${this.allGroups.length} groups`);
+            return this.ldap.unbind();
+        }).catch(err => {
+            this.logger.warn({ err }, `Groupname sync failed: ${err}`);
+        });
+      }, config.syncInterval || 60000);
+    }
   }
 
   allow_action(action) {
     return function (user, pkg, callback) {
       const {
-        name,
-        groups
+        name: userName,
+        groups: userGroups
       } = user;
-      const hasPermission = pkg[action].some(group => name === group || groups.includes(group));
 
+
+      // Split pkgName
       const pkgName = pkg.name;
       const isOrgPackage = pkgName.startsWith('@');
       const orgEnd = pkgName.indexOf('/');
+
       if (isOrgPackage && orgEnd > 0) {
         // scoped package, check for special scoping rules
+        // orgName contains the organization name.
         const orgName = pkgName.slice(1, orgEnd);
-        if (groups.includes(orgName) && pkg[action].includes('$group')) {
+
+        // Wildcard group access
+        const userHasDirectAccess = userGroups.includes(orgName) && pkg[action].includes('$group');
+
+        // Groups which are not contained in the ldap server
+        const groupNotManagedByLdap = this.config.allowNonexistingLdapGroups && this.allGroups.findIndex(g => g === orgName) === -1;
+
+        if (userHasDirectAccess || groupNotManagedByLdap) {
           // User is in the group named like the package scope, allow it.
           return callback(null, true);
         }
       }
 
+      // Direct group access.
+      const hasPermission = pkg[action].some(group => userName === group || userGroups.includes(group));
       if (hasPermission) {
         return callback(null, true);
       }
 
-      if (name) {
-        callback(createError(403, `user ${name} is not allowed to ${action} package ${pkg.name}`));
+      if (userName) {
+        callback(createError(403, `user ${userName} is not allowed to ${action} package ${pkg.name}`));
       } else {
         callback(createError(401, `authorization required to ${action} package ${pkg.name}`));
       }

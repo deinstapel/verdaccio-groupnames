@@ -9,6 +9,7 @@
   "author": "Martin Koppehel",
   "license": "MIT",
   "dependencies": {
-    "http-errors": "^1.7.2"
+    "http-errors": "^1.7.2",
+    "ldapts": "^1.10.0"
   }
 }
