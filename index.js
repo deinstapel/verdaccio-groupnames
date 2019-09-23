@@ -28,7 +28,7 @@ class DynamicGroupPlugin {
   }
 
   allow_action(action) {
-    return function (user, pkg, callback) {
+    return (user, pkg, callback) => {
       const {
         name: userName,
         groups: userGroups
