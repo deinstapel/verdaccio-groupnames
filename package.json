@@ -1,6 +1,6 @@
 {
   "name": "verdaccio-groupnames",
-  "version": "1.0.3",
+  "version": "1.0.4-0",
   "description": "Verdaccio Plugins to grant access to group names based on the groups calculated in the authentication",
   "main": "index.js",
   "scripts": {
