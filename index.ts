@@ -1,6 +1,11 @@
 import createError from 'http-errors';
 import { Client } from 'ldapts';
-import { AllowAccess, AuthAccessCallback, AuthCallback, IPluginAuth, Logger, PackageAccess, PluginOptions, RemoteUser } from '@verdaccio/types';
+import type { pluginUtils } from '@verdaccio/core';
+import type { AllowAccess, Logger, PackageAccess, RemoteUser } from '@verdaccio/types';
+
+type AuthAccessCallback = pluginUtils.AuthAccessCallback;
+type AuthCallback = pluginUtils.AuthCallback;
+type IPluginAuth<T> = Pick<pluginUtils.Auth<T>, 'authenticate' | 'allow_access' | 'allow_publish' | 'allow_unpublish'>;
 
 export type LDAPConfig = {
   ldapURL: string;
@@ -16,7 +21,7 @@ export type LDAPConfig = {
 export default class DynamicGroupPlugin implements IPluginAuth<LDAPConfig> {
   private logger: Logger;
   private allGroups: string[] = [];
-  public constructor(private config: LDAPConfig, stuff: PluginOptions<LDAPConfig>) {
+  public constructor(private config: LDAPConfig, stuff: pluginUtils.PluginOptions) {
     this.logger = stuff.logger;
 
     if (config.allowNonexistingLdapGroups) {

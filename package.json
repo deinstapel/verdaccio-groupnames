@@ -1,23 +1,30 @@
 {
   "name": "verdaccio-groupnames",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Verdaccio Plugins to grant access to group names based on the groups calculated in the authentication",
   "main": "dist/index.js",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "author": "Martin Koppehel",
   "license": "MIT",
   "dependencies": {
-    "http-errors": "^1.8.1",
-    "ldapts": "^3.1.1"
+    "http-errors": "^2.0.1",
+    "ldapts": "^9.2.0"
   },
   "devDependencies": {
-    "@types/http-errors": "^1.8.1",
-    "@verdaccio/types": "^10.0.0",
-    "typescript": "^4.4.4"
+    "@types/http-errors": "^2.0.5",
+    "@types/node": "^24.0.0",
+    "@verdaccio/core": "9.0.0-next-9.41",
+    "@verdaccio/types": "14.0.0-next-9.18",
+    "typescript": "^7.0.2"
   }
 }
